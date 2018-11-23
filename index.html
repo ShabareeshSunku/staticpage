@@ -1,35 +1,122 @@
-<!DOCTYPE html "-//W3C//DTD XHTML 1.0 Strict//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Books Embedded Viewer API Example</title>
-    <script type="text/javascript" src="https://www.google.com/books/jsapi.js"></script>
-    <script type="text/javascript">
-      google.books.load();
-      function getQueryParam(name) {
-          name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-          var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-          var results = regex.exec(location.search);
-          return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-      };
-      function successCallback(){
-        console.log('====> loaded')
+<!DOCTYPE DOCTYPE html "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Books</title>
+  <style>
+    #loader {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 1;
+        width: 40px;
+        height: 40px;
+        margin: -20px 0 0 -20px;
+        border: 6px solid #dbedf9;
+        border-radius: 50%;
+        border-top: 6px solid #3498db;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
       }
-      function errorCallback(){
-        console.log('====> error')
+      #error-message{
+        position: absolute;
+        top: 35%;
+        width:100%;
+        z-index: 1;
+        text-align: center;
+        display: none;
       }
-      function initialize() {
-        var viewer = new google.books.DefaultViewer(document.getElementById('viewerCanvas'));
-        var bookId = getQueryParam('bookId');
-        viewer.load(bookId,errorCallback, successCallback);
+      #error-message h1,h2{
+        color : tomato;
       }
+      @-webkit-keyframes spin {
+        0% {
+          -webkit-transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+        }
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      /* Add animation to "page content" */
+      .animate-bottom {
+        position: relative;
+        -webkit-animation-name: animatebottom;
+        -webkit-animation-duration: 2s;
+        animation-name: animatebottom;
+        animation-duration: 2s
+      }
+      @-webkit-keyframes animatebottom {
+        from {
+          bottom: -200px;
+          opacity: 0
+        }
+        to {
+          bottom: 0px;
+          opacity: 1
+        }
+      }
+      @keyframes animatebottom {
+        from {
+          bottom: -200px;
+          opacity: 0
+        }
+        to {
+          bottom: 0;
+          opacity: 1
+        }
+      }
+      #viewerCanvas {
+        display: none;
+        width: 100%;
+        height: 100%;
+      }
+      #viewerCanvas>div>div:nth-child(2) {
+        display: none
+      } 
+    </style>
+</head>
 
-      google.books.setOnLoadCallback(initialize);
-    </script>
-  </head>
-  <body>
-    <div id="viewerCanvas" style="width: 100%; height: 100%"></div>
-  </body>
+<body>
+  <div id="loader"></div>
+  <div id="error-message" class="animate-bottom">
+    <h1>oops!</h1>
+    <h2>Something went Wrong</h2>
+  </div>
+  <div id="viewerCanvas" class="animate-bottom" style="width: 100%;height: 100%;"></div>
+  <script type="text/javascript" src="https://www.google.com/books/jsapi.js"></script>
+  <script type="text/javascript">
+    google.books.load();
+    function getQueryParam(name) {
+      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+      var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+      var results = regex.exec(location.search);
+      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+    function successCallback() {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("viewerCanvas").style.display = "block";
+    }
+    function errorCallback() {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("error-message").style.display = "block";
+    }
+    function initialize() {
+      var viewer = new google.books.DefaultViewer(document.getElementById('viewerCanvas'));
+      var bookId = getQueryParam('bookId');
+      viewer.load(bookId, errorCallback, successCallback);
+    }
+    google.books.setOnLoadCallback(initialize);
+  </script>
+</body>
+
 </html>
