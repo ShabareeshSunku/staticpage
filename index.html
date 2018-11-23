@@ -3,20 +3,33 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Google Books Embedded Viewer API Example</title>
     <script type="text/javascript" src="https://www.google.com/books/jsapi.js"></script>
     <script type="text/javascript">
       google.books.load();
-
+      function getQueryParam(name) {
+          name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+          var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+          var results = regex.exec(location.search);
+          return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+      };
+      successCallback(){
+        console.log('====> loaded')
+      }
+      errorCallback(){
+        console.log('====> error')
+      }
       function initialize() {
         var viewer = new google.books.DefaultViewer(document.getElementById('viewerCanvas'));
-        viewer.load('ISBN:0738531367');
+        var bookId = getQueryParam('bookId');
+        viewer.load(bookId,errorCallback, successCallback);
       }
 
       google.books.setOnLoadCallback(initialize);
     </script>
   </head>
   <body>
-    <div id="viewerCanvas" style="width: 600px; height: 500px"></div>
+    <div id="viewerCanvas" style="width: 100%; height: 100%"></div>
   </body>
 </html>
